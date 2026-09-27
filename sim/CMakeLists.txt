@@ -11,5 +11,10 @@ include_directories(inc
 aux_source_directory(src NOSLINK_SRC)
 
 add_library(noslink STATIC ${NOSLINK_SRC})
-target_link_libraries(noslink ${NOSENGINE_LIBRARIES} gcov)
+if(APPLE)
+    # no libgcov on macOS (and ComponentSettings.cmake drops coverage there)
+    target_link_libraries(noslink ${NOSENGINE_LIBRARIES})
+else()
+    target_link_libraries(noslink ${NOSENGINE_LIBRARIES} gcov)
+endif()
 

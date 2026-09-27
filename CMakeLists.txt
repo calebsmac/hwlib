@@ -26,7 +26,13 @@ add_cfe_app(hwlib ${APP_SRC_FILES})
 # stub out hardware for all non-flight configurations
 IF(CFE_SYSTEM_PSPNAME STREQUAL NOS_PSPNAME)
     add_subdirectory(sim)
-    target_link_libraries(hwlib noslink)
+    IF(NOT APPLE)
+        # On macOS, two-level namespaces would give hwlib.so its own copy of
+        # noslink (and a NULL NOS Engine hub).  There noslink is force-loaded
+        # into core-cpu1 instead (cfg/nos3_defs/arch_build_custom.cmake) and
+        # hwlib.so binds to it when ES loads it.
+        target_link_libraries(hwlib noslink)
+    ENDIF()
 ELSEIF(CFE_SYSTEM_PSPNAME STREQUAL "pc-linux")
 	target_link_libraries(hwlib socketcan)
 ENDIF()

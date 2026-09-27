@@ -170,7 +170,20 @@ extern void nos_destroy_spi_link(void);
 /* initialize nos engine link */
 void nos_init_link(void)
 {
+    int i;
+    const char *engine_uri = getenv("NOS_ENGINE_SERVER_URI");
+
     OS_printf("initializing nos engine link...\n");
+
+    /* NOS_ENGINE_SERVER_URI, if set, replaces tcp://nos-engine-server:12000 */
+    if ((engine_uri != NULL) && (engine_uri[0] != 0))
+    {
+        OS_printf("nos engine link: server %s (from NOS_ENGINE_SERVER_URI)\n", engine_uri);
+        for (i = 0; i < NUM_USARTS; i++)       nos_usart_connection[i].uri = engine_uri;
+        for (i = 0; i < NUM_I2C_DEVICES; i++)  nos_i2c_connection[i].uri = engine_uri;
+        for (i = 0; i < NUM_CAN_DEVICES; i++)  nos_can_connection[i].uri = engine_uri;
+        for (i = 0; i < NUM_SPI_DEVICES; i++)  nos_spi_connection[i].uri = engine_uri;
+    }
 
     /* create transport hub */
     hub = NE_create_transport_hub(0);

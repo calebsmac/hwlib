@@ -46,6 +46,27 @@ ivv-itc@lists.nasa.gov
 #endif
 
 
+#if !defined(__linux__) && !defined(__rtems__)
+/*
+ * The message layout of Linux <linux/i2c.h>, used by i2c_multiple_transaction,
+ * for hosts without it (macOS, where the NOS Engine sim library implements it)
+ */
+struct i2c_msg
+{
+    uint16_t addr;  /* slave address */
+    uint16_t flags; /* I2C_M_RD for a read */
+    uint16_t len;   /* message length */
+    uint8_t *buf;   /* message data */
+};
+#define I2C_M_RD 0x0001
+
+struct i2c_rdwr_ioctl_data
+{
+    struct i2c_msg *msgs;  /* messages */
+    uint32_t        nmsgs; /* number of messages */
+};
+#endif
+
 /*
  * I2C device modes
 */

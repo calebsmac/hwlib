@@ -87,9 +87,10 @@ ivv-itc@lists.nasa.gov
  */
 typedef uint32_t canid_t;
 
-#ifdef __rtems__
+#ifndef __linux__
 /**
  * struct can_frame - basic CAN frame structure
+ * (from <linux/can.h> on Linux; defined here for RTEMS and macOS)
  */
 struct can_frame{
     uint32_t  can_id;  /* 32 bit CAN_ID*/

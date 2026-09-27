@@ -22,6 +22,10 @@ ivv-itc@lists.nasa.gov
 #include <arpa/inet.h> 
 #include <netinet/in.h>
 
+#ifndef MSG_CONFIRM
+#define MSG_CONFIRM 0 /* Linux-only neighbour-confirmation hint; none elsewhere */
+#endif
+
 /* nos */
 #include <Spi/Client/CInterface.h>
 
