@@ -333,7 +333,7 @@ int32_t socket_send(socket_info_t* socket_info, uint8_t* buffer, size_t buflen, 
         case dgram:
         {
             // Prepare the remote_sockaddr structure 
-            remote_sockaddr.sin_family = socket_info->address_family;
+            remote_sockaddr.sin_family = (socket_info->address_family == ip_ver_6) ? AF_INET6 : AF_INET;
             if(inet_addr(remote_ip_address) != INADDR_NONE)
             {
                 remote_sockaddr.sin_addr.s_addr = inet_addr(remote_ip_address);
@@ -342,6 +342,7 @@ int32_t socket_send(socket_info_t* socket_info, uint8_t* buffer, size_t buflen, 
             {
                 char ip[16];
                 int check = HostToIp(remote_ip_address, ip);
+                if (check != 0) OS_printf("socket_send: HostToIp %s failed (%d)\n", remote_ip_address, check);
                 if(check == 0)
                 {
                     remote_sockaddr.sin_addr.s_addr = inet_addr(ip);
